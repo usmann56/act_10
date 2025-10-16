@@ -53,6 +53,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(onPressed: _update, child: const Text('Update')),
             const SizedBox(height: 10),
             ElevatedButton(onPressed: _delete, child: const Text('Delete')),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _deleteAll,
+              child: const Text('Delete All'),
+            ),
+            const SizedBox(height: 10),
+
             SizedBox(
               width: 200,
               child: TextField(
@@ -118,6 +125,11 @@ class _MyHomePageState extends State<MyHomePage> {
     final id = await dbHelper.queryRowCount();
     final rowsDeleted = await dbHelper.delete(id);
     debugPrint('Deleted $rowsDeleted row(s): row $id');
+  }
+
+  static void _deleteAll() async {
+    await dbHelper.deleteAll();
+    debugPrint('Deleted all rows');
   }
 
   Future<void> _queryById() async {

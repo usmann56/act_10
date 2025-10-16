@@ -76,6 +76,10 @@ $columnAge INTEGER NOT NULL
     return await _db.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
 
+  Future<int> deleteAll() async {
+    return await _db.delete(table);
+  }
+
   Future<Map<String, dynamic>?> queryRowById(int id) async {
     final results = await _db.query(
       table,
