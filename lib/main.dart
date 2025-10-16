@@ -25,8 +25,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  // final TextEditingController _idController = TextEditingController();
+  String _queryResult = '';
+  String _enteredId = '';
 
   // Homepage layout
   @override
@@ -44,6 +53,30 @@ class MyHomePage extends StatelessWidget {
             ElevatedButton(onPressed: _update, child: const Text('Update')),
             const SizedBox(height: 10),
             ElevatedButton(onPressed: _delete, child: const Text('Delete')),
+            SizedBox(
+              width: 200,
+              child: TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Enter ID',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  _enteredId = value; // store the value directly
+                },
+                onSubmitted: (value) => _queryById(),
+              ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _queryById,
+              child: const Text('Find Record'),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              _queryResult,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
@@ -85,5 +118,25 @@ class MyHomePage extends StatelessWidget {
     final id = await dbHelper.queryRowCount();
     final rowsDeleted = await dbHelper.delete(id);
     debugPrint('Deleted $rowsDeleted row(s): row $id');
+  }
+
+  Future<void> _queryById() async {
+    if (_enteredId.isEmpty) {
+      setState(() => _queryResult = 'Please enter an ID.');
+      return;
+    }
+
+    final id = int.tryParse(_enteredId);
+    if (id == null) {
+      setState(() => _queryResult = 'Invalid ID format.');
+      return;
+    }
+
+    final result = await dbHelper.queryRowById(id);
+    setState(() {
+      _queryResult = result != null
+          ? 'Found ID: ${result[DatabaseHelper.columnId]} Name: ${result[DatabaseHelper.columnName]}, Age: ${result[DatabaseHelper.columnAge]}'
+          : 'No record found for ID $id.';
+    });
   }
 }
