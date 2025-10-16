@@ -131,7 +131,6 @@ class _MyHomePageState extends State<MyHomePage> {
     final id = await dbHelper.queryRowCount();
     await dbHelper.deleteAll();
     debugPrint('Deleted $id rows');
-    setState(() => _enteredId = '');
     setState(() => _queryResult = '');
   }
 
