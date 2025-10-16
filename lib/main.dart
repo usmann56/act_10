@@ -127,9 +127,12 @@ class _MyHomePageState extends State<MyHomePage> {
     debugPrint('Deleted $rowsDeleted row(s): row $id');
   }
 
-  static void _deleteAll() async {
+  Future<void> _deleteAll() async {
+    final id = await dbHelper.queryRowCount();
     await dbHelper.deleteAll();
-    debugPrint('Deleted all rows');
+    debugPrint('Deleted $id rows');
+    setState(() => _enteredId = '');
+    setState(() => _queryResult = '');
   }
 
   Future<void> _queryById() async {
